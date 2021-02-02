@@ -1,7 +1,16 @@
 import './style.css'
 import {
-  AxesHelper, BoxGeometry, Group, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGLRenderer,
+  AxesHelper,
+  BoxGeometry,
+  Clock,
+  Group,
+  Mesh,
+  MeshBasicMaterial,
+  PerspectiveCamera,
+  Scene,
+  WebGLRenderer,
 } from 'three'
+import gsap from 'gsap'
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -78,22 +87,33 @@ const renderer = new WebGLRenderer({
 })
 renderer.setSize(sizes.width, sizes.height)
 
-let time = Date.now()
+// INFO: JS time
+// const time = Date.now()
+// INFO: Three.js time
+// const clock = new Clock()
+
+gsap.to(cube.position, { x: 2, duration: 1, delay: 1 })
 
 // Animation
 const tick = () => {
-  // Time to handle animation speed vs framerates
-  const currentTime = Date.now()
-  const deltaTime = currentTime - time
-  time = currentTime
+  // INFO: Time to handle animation speed vs framerates. JS way
+  // const currentTime = Date.now()
+  // const deltaTime = currentTime - time
+  // time = currentTime
   // Update
-  cube.rotation.x += 0.01 * deltaTime
-  cube2.rotation.y += 0.01 * deltaTime
+  // cube.rotation.x += 0.005 * elapsedTime
+  // cube2.rotation.y += 0.002 * elapsedTime
 
-  // Render per frame
+  // INFO: Using Three.js clock
+  // const elapsedTime = clock.getElapsedTime() // Returns seconds
+  // Update
+  // cube.rotation.x = elapsedTime
+  // cube2.rotation.y = elapsedTime
+
+  // INFO: Render per frame
   renderer.render(scene, camera)
 
-  // Calls the function in the next frame.
+  // INFO: Calls the function in the next frame.
   window.requestAnimationFrame(tick)
 }
 
