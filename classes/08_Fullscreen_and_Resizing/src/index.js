@@ -18,8 +18,8 @@ import gsap from 'gsap'
  * Sizes
  */
 const sizes = {
-  width: 800,
-  height: 600,
+  width: window.innerWidth,
+  height: window.innerHeight,
 }
 
 // Cursor
@@ -27,6 +27,7 @@ const cursor = {
   x: 0,
   y: 0,
 }
+
 window.addEventListener('mousemove', (event) => {
   cursor.x = event.clientX / sizes.width - 0.5
   cursor.y = event.clientY / sizes.height - 0.5
@@ -90,6 +91,7 @@ camera.lookAt(cube.position)
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
+// controls.enabled = false
 controls.enableDamping = true
 // controls.target.y = 1
 // controls.update()
@@ -101,6 +103,28 @@ const renderer = new WebGLRenderer({
   canvas,
 })
 renderer.setSize(sizes.width, sizes.height)
+// Set pixel ratio according to the device. Limit 2.
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+// Resize listener
+window.addEventListener('resize', (event) => {
+  sizes.width = window.innerWidth
+  sizes.height = window.innerHeight
+
+  // Update camera
+  camera.aspect = sizes.width / sizes.height
+  camera.updateProjectionMatrix()
+  renderer.setSize(sizes.width, sizes.height)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+})
+
+window.addEventListener('dblclick', (event) => {
+  if (!document.fullscreenElement) {
+    canvas.requestFullscreen()
+  } else {
+    document.exitFullscreen()
+  }
+})
 
 const clock = new Clock()
 

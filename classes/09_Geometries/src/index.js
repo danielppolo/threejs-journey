@@ -1,7 +1,10 @@
 import './style.css'
 import {
   AxesHelper,
+  BoxBufferGeometry,
   BoxGeometry,
+  BufferAttribute,
+  BufferGeometry,
   Clock,
   Group,
   Mesh,
@@ -18,8 +21,8 @@ import gsap from 'gsap'
  * Sizes
  */
 const sizes = {
-  width: 800,
-  height: 600,
+  width: window.innerWidth,
+  height: window.innerHeight,
 }
 
 // Cursor
@@ -27,6 +30,7 @@ const cursor = {
   x: 0,
   y: 0,
 }
+
 window.addEventListener('mousemove', (event) => {
   cursor.x = event.clientX / sizes.width - 0.5
   cursor.y = event.clientY / sizes.height - 0.5
@@ -45,9 +49,34 @@ const scene = new Scene()
 // Group -< Object3D
 const group = new Group()
 scene.add(group)
+
+const geometry = new BufferGeometry()
+// nd array (1d)
+// const positionsArray = new Float32Array([
+//   0, 0, 0, // Vertex 1
+//   0, 1, 0, // Vertex 2
+//   1, 0, 0, // Vertex 3
+// ])
+// const positionsAttr = new BufferAttribute(positionsArray, 3)
+// geometry.setAttribute('position', positionsAttr)
+
+const count = 50
+const positionsArray = new Float32Array(count * 3 * 3)
+
+for (let i = 0; i < count * 3 * 3; i++) {
+  positionsArray[i] = Math.random() - 0.5
+}
+
+const positionsAttr = new BufferAttribute(positionsArray, 3)
+geometry.setAttribute('position', positionsAttr)
+
 const cube = new Mesh(
-  new BoxGeometry(1, 1, 1),
-  new MeshBasicMaterial({ color: 0x0000ff }),
+  // new BoxBufferGeometry(1, 1, 1, 2, 2, 2),
+  geometry,
+  new MeshBasicMaterial({
+    color: 0x0000ff,
+    wireframe: true,
+  }),
 )
 group.add(cube)
 
@@ -90,6 +119,7 @@ camera.lookAt(cube.position)
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
+// controls.enabled = false
 controls.enableDamping = true
 // controls.target.y = 1
 // controls.update()
@@ -101,6 +131,28 @@ const renderer = new WebGLRenderer({
   canvas,
 })
 renderer.setSize(sizes.width, sizes.height)
+// Set pixel ratio according to the device. Limit 2.
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+// Resize listener
+window.addEventListener('resize', (event) => {
+  sizes.width = window.innerWidth
+  sizes.height = window.innerHeight
+
+  // Update camera
+  camera.aspect = sizes.width / sizes.height
+  camera.updateProjectionMatrix()
+  renderer.setSize(sizes.width, sizes.height)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+})
+
+window.addEventListener('dblclick', (event) => {
+  if (!document.fullscreenElement) {
+    canvas.requestFullscreen()
+  } else {
+    document.exitFullscreen()
+  }
+})
 
 const clock = new Clock()
 
