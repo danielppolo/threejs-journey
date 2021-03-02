@@ -1,5 +1,5 @@
 {
-    "name": "16_haunted_house",
+    "name": "17_particles",
     "scripts": {
         "build": "webpack --config ./webpack.prod.js",
         "start": "webpack serve --config ./webpack.dev.js"

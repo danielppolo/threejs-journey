@@ -1,5 +1,5 @@
 {
-    "name": "10_debug_ui",
+    "name": "11_textures",
     "scripts": {
         "build": "webpack --config ./webpack.prod.js",
         "dev": "webpack serve --config ./webpack.dev.js"
